@@ -22,7 +22,7 @@ const sendFeedback = async (email, message, name) => {
             to: "nummad222@gmail.com",
             subject: 'User feedback',
             text: "User feedback",
-            html: message,
+            html: `From: ${email}<br> ${message}`,
         });
         console.log('Email sent', response);
     } catch (e) {
