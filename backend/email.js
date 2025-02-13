@@ -19,8 +19,7 @@ const sendFeedback = async (email, message, name) => {
     try {
         const response = await transporter.sendMail({
             from: '"Blemishbot" <nummad222@gmail.com>', 
-            to: "nummad222@gmail.com", 
-            replyTo: senderEmail,
+            to: "nummad222@gmail.com",
             subject: 'User feedback',
             text: "User feedback",
             html: message,
