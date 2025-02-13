@@ -15,11 +15,11 @@ const sendVerificationCode = async (email, verificationCode) => {
     }
 }
 
-const sendFeedback = async (email, message) => {
+const sendFeedback = async (email, message, name) => {
     try{
         const response = await transporter.sendMail({
         to: '"Blemishbot" <nummad222@gmail.com>', 
-        from: email, 
+        from: `${name} ${email}`, 
         subject: 'User feedback', 
         text: "User feedback",
         html: message,

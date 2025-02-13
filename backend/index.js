@@ -77,9 +77,9 @@ app.post('/signup', async (req, res) => {
 });
 
 app.post('/feedback', async(req, res)=>{
-    const {email, message} = req.body;
+    const {email, message, name} = req.body;
     try{
-        await sendFeedback(email, message);
+        await sendFeedback(email, message, name);
         res.status(200).json({message: "Feedback sent"});
     }catch(e){
         res.status(500).json({ error: 'An error occurred while processing your request' });
