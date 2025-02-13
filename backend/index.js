@@ -4,7 +4,7 @@ const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 const userModel = require('./models/users');
 const bcrypt = require('bcrypt');
-const { sendVerificationCode } = require('./email');
+const { sendVerificationCode, sendFeedback } = require('./email');
 const mongoURI = 'mongodb+srv://nummad:12345@cluster0.ixnpx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
 const multer = require('multer');
 const cloudinary = require('./cloudinaryConfig');
@@ -75,6 +75,18 @@ app.post('/signup', async (req, res) => {
         res.status(500).json({ error: 'An error occurred while processing your request' });
     }
 });
+
+app.post('/feedback', async(req, res)=>{
+    const {email, message} = req.body;
+    try{
+        await sendFeedback(email, message);
+        res.status(200).json({message: "Feedback sent"});
+    }catch(e){
+        res.status(500).json({ error: 'An error occurred while processing your request' });
+
+    }
+});
+
 app.post('/verify', async (req, res) => {
     const { email, verificationCode } = req.body;
     try {

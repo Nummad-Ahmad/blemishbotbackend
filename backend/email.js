@@ -15,4 +15,20 @@ const sendVerificationCode = async (email, verificationCode) => {
     }
 }
 
-module.exports = { sendVerificationCode };
+const sendFeedback = async (email, message) => {
+    try{
+        const response = await transporter.sendMail({
+        to: '"Blemishbot" <nummad222@gmail.com>', 
+        from: email, 
+        subject: 'User feedback', 
+        text: "User feedback",
+        html: message,
+    }); 
+    console.log('Email sent', response);
+    }catch(e){
+        console.log(e);
+    }
+}
+
+
+module.exports = { sendVerificationCode, sendFeedback };
