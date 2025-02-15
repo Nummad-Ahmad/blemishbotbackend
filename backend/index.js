@@ -11,6 +11,14 @@ const cloudinary = require('./cloudinaryConfig');
 const imageModel = require('./models/image');
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
+const session = require('express-session');
+require('dotenv').config();
+const passport = require('passport');
+require('./passport');
+const constantFunctions = require('consts');
+
+const clientId = process.env.CLIENT_ID;
+const clientSecret = process.env.CLIENT_SECRET;
 
 
 dotenv.config();
@@ -25,6 +33,15 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.use(express.json());
+app.use(session(
+    {
+        resave: false,
+        saveUninitialized: true,
+        secret: process.env.CLIENT_SECRET
+    }));
+app.use(passport.initialize());
+app.use(passport.session());
+
 
 app.get('/', (req, res) => {
     res.send('Backend deployed successfully');
@@ -39,6 +56,17 @@ app.get('/history', async (req, res) => {
         res.status(500).json({ message: 'Server error', error: e.message });
     }
 });
+app.get('/googleauth', passport.authenticate('google', {scope: 
+    ['email', 'profile']
+}));
+app.get('/googleauth/callback', 
+    passport.authenticate('google', {
+        successRedirect: '/success',
+        failureRedirect: '/failure'
+    })
+)
+app.get('/success', constantFunctions.successGoogleLogin);
+app.get('/failure', constantFunctions.failureGoogleLogin);
 app.post('/login', async (req, res) => {
     const { email, password } = req.body;
     try {
@@ -76,12 +104,12 @@ app.post('/signup', async (req, res) => {
     }
 });
 
-app.post('/feedback', async(req, res)=>{
-    const {email, message, name} = req.body;
-    try{
+app.post('/feedback', async (req, res) => {
+    const { email, message, name } = req.body;
+    try {
         await sendFeedback(email, message, name);
-        res.status(200).json({message: "Feedback sent"});
-    }catch(e){
+        res.status(200).json({ message: "Feedback sent" });
+    } catch (e) {
         res.status(500).json({ error: 'An error occurred while processing your request' });
 
     }
