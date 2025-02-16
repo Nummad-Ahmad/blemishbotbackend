@@ -15,7 +15,8 @@ const session = require('express-session');
 require('dotenv').config();
 const passport = require('passport');
 require('./passport');
-const constantFunctions = require('consts');
+
+const constantFunctions = require('./constants');
 
 const clientId = process.env.CLIENT_ID;
 const clientSecret = process.env.CLIENT_SECRET;
