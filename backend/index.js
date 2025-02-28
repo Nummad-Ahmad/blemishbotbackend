@@ -45,7 +45,7 @@ app.use(passport.session());
 
 
 app.get('/', (req, res) => {
-    res.send('Backend deployed successfully');
+    res.status(200).json({ message: 'Backend deployed successfully' });
 });
 app.get('/history', async (req, res) => {
     try {
