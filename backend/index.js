@@ -18,10 +18,6 @@ require('./passport');
 
 const constantFunctions = require('./constants');
 
-const clientId = process.env.CLIENT_ID;
-const clientSecret = process.env.CLIENT_SECRET;
-
-
 dotenv.config();
 const app = express();
 const port = 3000;
@@ -38,7 +34,7 @@ app.use(session(
     {
         resave: false,
         saveUninitialized: true,
-        secret: "Hello123"
+        secret: process.env.SESSION_SECRET
     }));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -57,10 +53,10 @@ app.get('/history', async (req, res) => {
         res.status(500).json({ message: 'Server error', error: e.message });
     }
 });
-app.get('/googleauth', passport.authenticate('google', {scope: 
+app.get('/auth/google', passport.authenticate('google', {scope: 
     ['email', 'profile']
 }));
-app.get('/googleauth/callback', 
+app.get('/auth/google/callback', 
     passport.authenticate('google', {
         successRedirect: '/success',
         failureRedirect: '/failure'
@@ -212,9 +208,9 @@ app.post('/verifyforgotpassword', async (req, res) => {
 });
 
 
-mongoose.connect(mongoURI)
-    .then(() => console.log('Connected to MongoDB'))
-    .catch(err => console.log('Could not connect to MongoDB', err));
+// mongoose.connect(mongoURI)
+//     .then(() => console.log('Connected to MongoDB'))
+//     .catch(err => console.log('Could not connect to MongoDB', err));
 
 app.listen(port, () => {
     console.log('server started');
