@@ -15,6 +15,8 @@ const session = require('express-session');
 require('dotenv').config();
 const passport = require('passport');
 require('./passport');
+const cookieParser = require("cookie-parser");
+
 
 const constantFunctions = require('./constants');
 
@@ -29,6 +31,7 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+app.use(cookieParser());
 app.use(express.json());
 app.use(session(
     {
@@ -57,11 +60,17 @@ app.get('/auth/google', passport.authenticate('google', {scope:
     ['email', 'profile']
 }));
 app.get('/auth/google/callback', 
-    passport.authenticate('google', {
-        successRedirect: '/success',
-        failureRedirect: '/failure'
-    })
-)
+    passport.authenticate('google', { failureRedirect: '/failure' }),
+    (req, res) => {
+        res.cookie("email", req.user.emails[0].value, { 
+            maxAge: 50 * 365 * 24 * 60 * 60 * 1000, 
+            httpOnly: false, 
+            secure: true, 
+            sameSite: "lax"
+        });
+        res.redirect('https://blemish-bot.vercel.app/chat');
+    }
+);
 app.get('/success', constantFunctions.successGoogleLogin);
 app.get('/failure', constantFunctions.failureGoogleLogin);
 app.post('/login', async (req, res) => {
@@ -208,9 +217,9 @@ app.post('/verifyforgotpassword', async (req, res) => {
 });
 
 
-// mongoose.connect(mongoURI)
-//     .then(() => console.log('Connected to MongoDB'))
-//     .catch(err => console.log('Could not connect to MongoDB', err));
+mongoose.connect(mongoURI)
+    .then(() => console.log('Connected to MongoDB'))
+    .catch(err => console.log('Could not connect to MongoDB', err));
 
 app.listen(port, () => {
     console.log('server started');
