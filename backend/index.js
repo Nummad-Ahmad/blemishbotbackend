@@ -66,7 +66,8 @@ app.get('/auth/google/callback',
             maxAge: 50 * 365 * 24 * 60 * 60 * 1000, 
             httpOnly: false, 
             secure: true, 
-            sameSite: "lax"
+            sameSite: "none", // Change from "lax" to "none" for cross-origin
+            domain: "blemish-bot.vercel.app" // Ensure this matches your frontend domain
         });
         res.redirect('https://blemish-bot.vercel.app/chat');
     }
