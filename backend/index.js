@@ -212,9 +212,7 @@ app.post('/verifyforgotpassword', async (req, res) => {
 });
 
 
-// mongoose.connect(mongoURI)
-//     .then(() => console.log('Connected to MongoDB'))
-//     .catch(err => console.log('Could not connect to MongoDB', err));
+mongoose.connect(mongoURI)
 
 app.listen(port, () => {
     console.log('server started');
