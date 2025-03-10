@@ -25,10 +25,12 @@ const app = express();
 const port = 3000;
 
 const corsOptions = {
-    origin: '*',
+    origin: ["https://blemish-bot.vercel.app", "http://localhost:3000"], // Allow both frontend domains
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true // Allow cookies & authentication
 };
+
 
 app.use(cors(corsOptions));
 app.use(cookieParser());
