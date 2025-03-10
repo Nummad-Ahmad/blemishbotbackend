@@ -67,7 +67,6 @@ app.get('/auth/google/callback',
             httpOnly: false, 
             secure: true, 
             sameSite: "none", // Change from "lax" to "none" for cross-origin
-            domain: "blemish-bot.vercel.app" // Ensure this matches your frontend domain
         });
         res.redirect('https://blemish-bot.vercel.app/chat');
     }
