@@ -25,7 +25,7 @@ const app = express();
 const port = 3000;
 
 const corsOptions = {
-    origin: '*',
+    origin: 'https://blemish-bot.vercel.app', // Allow only frontend domain
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true
