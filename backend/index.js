@@ -25,12 +25,10 @@ const app = express();
 const port = 3000;
 
 const corsOptions = {
-    origin: ["https://blemish-bot.vercel.app", "http://localhost:3000"], // Allow both frontend domains
+    origin: '*',
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true // Allow cookies & authentication
 };
-
 
 app.use(cors(corsOptions));
 app.use(cookieParser());
@@ -64,7 +62,7 @@ app.get('/auth/google', passport.authenticate('google', {scope:
 app.get('/auth/google/callback', 
     passport.authenticate('google', { failureRedirect: '/failure' }),
     (req, res) => {
-        res.cookie("email", 'Yes', { 
+        res.cookie("email", "Yes", { 
             maxAge: 50 * 365 * 24 * 60 * 60 * 1000, 
             httpOnly: false, 
             secure: true, 
