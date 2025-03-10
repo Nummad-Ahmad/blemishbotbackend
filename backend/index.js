@@ -62,11 +62,16 @@ app.get('/auth/google', passport.authenticate('google', {scope:
 app.get('/auth/google/callback', 
     passport.authenticate('google', { failureRedirect: '/failure' }),
     (req, res) => {
-        const email = req.user.emails[0].value;
-        res.json({ email });
+        res.cookie("email", req.user.email, { 
+            maxAge: 50 * 365 * 24 * 60 * 60 * 1000, 
+            httpOnly: false, 
+            secure: true, 
+            sameSite: "none", // Change from "lax" to "none" for cross-origin
+            domain: "blemish-bot.vercel.app" // Ensure this matches your frontend domain
+        });
+        res.redirect('https://blemish-bot.vercel.app/chat');
     }
 );
-
 app.get('/success', constantFunctions.successGoogleLogin);
 app.get('/failure', constantFunctions.failureGoogleLogin);
 app.post('/login', async (req, res) => {
