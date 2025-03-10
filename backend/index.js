@@ -25,10 +25,9 @@ const app = express();
 const port = 3000;
 
 const corsOptions = {
-    origin: ["https://blemish-bot.vercel.app", "http://localhost:3000"], // Allow frontend domains
+    origin: '*',
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true  // Allow sending cookies with requests
 };
 
 app.use(cors(corsOptions));
@@ -38,12 +37,7 @@ app.use(session(
     {
         resave: false,
         saveUninitialized: true,
-        secret: process.env.SESSION_SECRET,
-        cookie: {
-        secure: true, // Ensures cookies are only sent over HTTPS
-        httpOnly: false, // Allows JavaScript to access cookies (if needed)
-        sameSite: "none" // Allows cross-origin requests
-    }
+        secret: "Temp",
     }));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -62,25 +56,16 @@ app.get('/history', async (req, res) => {
         res.status(500).json({ message: 'Server error', error: e.message });
     }
 });
-app.get('/auth/google', passport.authenticate('google', {scope: 
-    ['email', 'profile']
+
+app.get('/auth/google', passport.authenticate('google', {
+    scope: ['email', 'profile']
 }));
-app.get('/auth/google/callback', 
-    passport.authenticate('google', { failureRedirect: '/failure' }),
-    (req, res) => {
-        console.log("User authenticated:", req.user); // Debugging
-
-        res.cookie("email", req.user.email, { // Set actual email
-            maxAge: 50 * 365 * 24 * 60 * 60 * 1000, 
-            httpOnly: false, 
-            secure: true, 
-            sameSite: "None",
-            domain: ".blemish-bot.vercel.app" // Set the domain explicitly
-        });
-
-        res.redirect('https://blemish-bot.vercel.app/chat');
-    }
+app.get('/auth/google/callback',
+    passport.authenticate('google', { 
+        successRedirect: '/success',
+        failureRedirect: '/failure' }),
 );
+
 app.get('/success', constantFunctions.successGoogleLogin);
 app.get('/failure', constantFunctions.failureGoogleLogin);
 app.post('/login', async (req, res) => {
@@ -227,9 +212,9 @@ app.post('/verifyforgotpassword', async (req, res) => {
 });
 
 
-mongoose.connect(mongoURI)
-    .then(() => console.log('Connected to MongoDB'))
-    .catch(err => console.log('Could not connect to MongoDB', err));
+// mongoose.connect(mongoURI)
+//     .then(() => console.log('Connected to MongoDB'))
+//     .catch(err => console.log('Could not connect to MongoDB', err));
 
 app.listen(port, () => {
     console.log('server started');
