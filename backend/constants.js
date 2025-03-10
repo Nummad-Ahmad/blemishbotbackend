@@ -4,7 +4,7 @@ const successGoogleLogin = (req, res) => {
         return res.redirect('/failure');
     }
     const email = req.user.email;
-    res.cookie('email', email, { httpOnly: false, secure: false, maxAge: 100 * 365 * 24 * 60 * 60 * 1000 });
+    res.cookie('email', email, { httpOnly: false, secure: true, sameSite: 'None', maxAge: 100 * 365 * 24 * 60 * 60 * 1000 });
     res.redirect('https://blemish-bot.vercel.app/chat');
 };
 
