@@ -25,9 +25,10 @@ const app = express();
 const port = 3000;
 
 const corsOptions = {
-    origin: '*',
+    origin: ["https://blemish-bot.vercel.app", "http://localhost:3000"], // Allow frontend domains
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true  // Allow sending cookies with requests
 };
 
 app.use(cors(corsOptions));
@@ -37,7 +38,12 @@ app.use(session(
     {
         resave: false,
         saveUninitialized: true,
-        secret: process.env.SESSION_SECRET
+        secret: process.env.SESSION_SECRET,
+        cookie: {
+        secure: true, // Ensures cookies are only sent over HTTPS
+        httpOnly: false, // Allows JavaScript to access cookies (if needed)
+        sameSite: "none" // Allows cross-origin requests
+    }
     }));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -62,12 +68,16 @@ app.get('/auth/google', passport.authenticate('google', {scope:
 app.get('/auth/google/callback', 
     passport.authenticate('google', { failureRedirect: '/failure' }),
     (req, res) => {
-        res.cookie("email", "Yes", { 
+        console.log("User authenticated:", req.user); // Debugging
+
+        res.cookie("email", req.user.email, { // Set actual email
             maxAge: 50 * 365 * 24 * 60 * 60 * 1000, 
             httpOnly: false, 
             secure: true, 
-            sameSite: "none", // Change from "lax" to "none" for cross-origin
+            sameSite: "None",
+            domain: ".blemish-bot.vercel.app" // Set the domain explicitly
         });
+
         res.redirect('https://blemish-bot.vercel.app/chat');
     }
 );
