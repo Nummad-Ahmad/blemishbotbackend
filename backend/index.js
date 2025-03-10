@@ -62,7 +62,7 @@ app.get('/auth/google', passport.authenticate('google', {scope:
 app.get('/auth/google/callback', 
     passport.authenticate('google', { failureRedirect: '/failure' }),
     (req, res) => {
-        res.cookie("email", req.user.emails[0].value, { 
+        res.cookie("email", req.user.email, { 
             maxAge: 50 * 365 * 24 * 60 * 60 * 1000, 
             httpOnly: false, 
             secure: true, 
