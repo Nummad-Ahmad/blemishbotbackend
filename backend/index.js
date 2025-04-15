@@ -107,18 +107,27 @@ app.post('/signup', async (req, res) => {
     }
 });
 
-app.post('/deactivate', async(req, res)=>{
-    const {email} = req.body;
-    try{
+app.post('/deactivate', async (req, res) => {
+    const { email } = req.body;
+    console.log("Received email:", email);
+    if (!email) {
+        return res.status(400).json({ message: "Email is required" });
+    }
+    try {
         const user = await userModel.findOneAndUpdate(
             { email },
-            { $set: { isVerified: false }}
+            { $set: { isVerified: false } }
         );
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
         res.status(200).json({ message: 'Account deactivated successfully' });
-    }catch(e){
-        res.status(500).json({message: "An error occurred"});
+    } catch (e) {
+        console.error("Error in /deactivate:", e);
+        res.status(500).json({ message: "An error occurred" });
     }
 });
+
 
 app.post('/feedback', async (req, res) => {
     const { email, message, name } = req.body;
