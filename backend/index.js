@@ -107,6 +107,19 @@ app.post('/signup', async (req, res) => {
     }
 });
 
+app.post('/deactivate', async(req, res)=>{
+    const {email} = req.body;
+    try{
+        const user = await userModel.findOneAndUpdate(
+            { email },
+            { $set: { isVerified: false }}
+        );
+        res.status(200).json({ message: 'Account deactivated successfully' });
+    }catch(e){
+        res.status(500).json({message: "An error occurred"});
+    }
+});
+
 app.post('/feedback', async (req, res) => {
     const { email, message, name } = req.body;
     try {
