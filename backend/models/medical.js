@@ -9,7 +9,7 @@ const medicalSchema = new mongoose.Schema({
 });
 
 
-const medicalModel = mongoose.model("imedical", medicalSchema);
+const medicalModel = mongoose.model("medical", medicalSchema);
 
 
 module.exports = medicalModel;
