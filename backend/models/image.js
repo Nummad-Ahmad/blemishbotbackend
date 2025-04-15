@@ -5,9 +5,6 @@ const imageSchema = new mongoose.Schema({
     sender: String,
     date: String,
     title: String,
-    preventions: String,
-    causes: String,
-    remedies: String,
 });
 
 

@@ -9,6 +9,7 @@ const mongoURI = 'mongodb+srv://nummad:12345@cluster0.ixnpx.mongodb.net/?retryWr
 const multer = require('multer');
 const cloudinary = require('./cloudinaryConfig');
 const imageModel = require('./models/image');
+const medicalModel = require('./models/medical');
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 const session = require('express-session');
@@ -185,11 +186,16 @@ app.post("/upload", upload.single("file"), async (req, res) => {
             sender: email,
             title: title,
             date: new Date(),
+        });
+        const newMedicalData = new medicalModel({
+            sender: email,
+            title: title,
             preventions,
             remedies,
             causes
         });
         await newImage.save();
+        await newMedicalData.save();
         res.status(201).json({
             success: true,
             message: "Image uploaded successfully",
