@@ -59,7 +59,8 @@ app.get('/history', async (req, res) => {
 });
 
 app.get('/auth/google', passport.authenticate('google', {
-    scope: ['email', 'profile']
+    scope: ['email', 'profile'],
+    prompt: 'select_account'
 }));
 app.get('/auth/google/callback',
     passport.authenticate('google', { 
@@ -68,7 +69,7 @@ app.get('/auth/google/callback',
 );
 
 app.get('/success', constantFunctions.successGoogleLogin);
-app.get('/failure', constantFunctions.failureGoogleLogin);
+app.get('/failure', constantFunctions.failureGoogleLogin);  
 app.post('/login', async (req, res) => {
     const { email, password } = req.body;
     try {
