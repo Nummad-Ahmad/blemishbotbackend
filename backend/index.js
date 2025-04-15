@@ -162,8 +162,7 @@ app.post('/verify', async (req, res) => {
 app.post("/upload", upload.single("file"), async (req, res) => {
     try {
         const file = req.file;
-        const email = req.body.email;
-        const title = req.body.title;
+        const {email, title, preventions, causes, remedies} = req.body;
         if (!file) {
             return res.status(400).json({ message: "No file uploaded" });
         }
@@ -186,6 +185,9 @@ app.post("/upload", upload.single("file"), async (req, res) => {
             sender: email,
             title: title,
             date: new Date(),
+            preventions,
+            remedies,
+            causes
         });
         await newImage.save();
         res.status(201).json({

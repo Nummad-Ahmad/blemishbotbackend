@@ -4,7 +4,10 @@ const imageSchema = new mongoose.Schema({
     url: String,
     sender: String,
     date: String,
-    title: String
+    title: String,
+    preventions: [String],
+    causes: [String],
+    remedies: [String],
 });
 
 
