@@ -109,6 +109,7 @@ app.post('/signup', async (req, res) => {
 
 app.post('/deactivate', async (req, res) => {
     const { email } = req.body;
+    const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
     console.log("Received email:", email);
     if (!email) {
         return res.status(400).json({ message: "Email is required" });
@@ -116,8 +117,9 @@ app.post('/deactivate', async (req, res) => {
     try {
         const user = await userModel.findOneAndUpdate(
             { email },
-            { $set: { isVerified: false } }
+            { $set: { isVerified: false, verificationCode }, }
         );
+        await sendVerificationCode(email, verificationCode);
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
