@@ -190,9 +190,9 @@ app.post("/upload", upload.single("file"), async (req, res) => {
         const newMedicalData = new medicalModel({
             sender: email,
             title: title,
-            preventions,
-            remedies,
-            causes
+            preventions: preventions,
+            remedies: remedies,
+            causes: causes
         });
         await newImage.save();
         await newMedicalData.save();
