@@ -64,13 +64,14 @@ app.get('/auth/google', passport.authenticate('google', {
     prompt: 'select_account'
 }));
 app.get('/auth/google/callback',
-    passport.authenticate('google', { 
+    passport.authenticate('google', {
         successRedirect: '/success',
-        failureRedirect: '/failure' }),
+        failureRedirect: '/failure'
+    }),
 );
 
 app.get('/success', constantFunctions.successGoogleLogin);
-app.get('/failure', constantFunctions.failureGoogleLogin);  
+app.get('/failure', constantFunctions.failureGoogleLogin);
 app.post('/login', async (req, res) => {
     const { email, password } = req.body;
     try {
@@ -78,6 +79,12 @@ app.post('/login', async (req, res) => {
 
         if (!existingUser) {
             return res.status(400).json({ error: 'User not found. Please sign up first.' });
+        }
+        if (existingUser.isVerified == false) {
+
+            const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+            await sendVerificationCode(email, verificationCode);
+            res.status(200).json({ message: 'Login successful', user: existingUser });
         }
         const isPasswordValid = await bcrypt.compare(password, existingUser.password);
         if (!isPasswordValid) {
@@ -110,7 +117,6 @@ app.post('/signup', async (req, res) => {
 
 app.post('/deactivate', async (req, res) => {
     const { email } = req.body;
-    const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
     console.log("Received email:", email);
     if (!email) {
         return res.status(400).json({ message: "Email is required" });
@@ -118,9 +124,8 @@ app.post('/deactivate', async (req, res) => {
     try {
         const user = await userModel.findOneAndUpdate(
             { email },
-            { $set: { isVerified: false, verificationCode }, }
+            { $set: { isVerified: false }, }
         );
-        await sendVerificationCode(email, verificationCode);
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
@@ -163,7 +168,7 @@ app.post('/verify', async (req, res) => {
 app.post("/upload", upload.single("file"), async (req, res) => {
     try {
         const file = req.file;
-        const {email, title, preventions, causes, remedies} = req.body;
+        const { email, title, preventions, causes, remedies } = req.body;
         if (!file) {
             return res.status(400).json({ message: "No file uploaded" });
         }
