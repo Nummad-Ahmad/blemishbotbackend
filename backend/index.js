@@ -81,7 +81,6 @@ app.post('/login', async (req, res) => {
             return res.status(400).json({ error: 'User not found. Please sign up first.' });
         }
         if (existingUser.isVerified == false) {
-
             const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
             await sendVerificationCode(email, verificationCode);
             res.status(200).json({ message: 'Login successful', user: existingUser });
